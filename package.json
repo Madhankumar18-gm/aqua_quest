@@ -1,0 +1,14 @@
+{
+  "name": "aqua-quest-root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AquaQuest — Gamified Water Conservation & Groundwater Awareness Portal",
+  "scripts": {
+    "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "seed": "npm run seed --prefix backend",
+    "backend": "npm start --prefix backend",
+    "backend:dev": "npm run dev --prefix backend",
+    "frontend": "npm run dev --prefix frontend",
+    "frontend:build": "npm run build --prefix frontend"
+  }
+}
