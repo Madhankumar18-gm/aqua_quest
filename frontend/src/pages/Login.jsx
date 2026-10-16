@@ -20,10 +20,11 @@ const Login = () => {
     setLoading(true);
 
     try {
-      await login(email, password);
+      await login(email.trim(), password.trim());
       navigate(from, { replace: true });
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid email or password. Please try again.');
+      console.error('Login error:', err);
+      setError(err.response?.data?.message || err.message || 'Invalid email or password. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -51,16 +52,16 @@ const Login = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-              Email Address
+              Email or Username
             </label>
             <div className="relative">
               <Mail className="w-5 h-5 text-slate-400 absolute left-3.5 top-3.5" />
               <input
-                type="email"
+                type="text"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder="admin@aquaquest.org or username"
                 className="w-full pl-11 pr-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-teal-500 text-sm"
               />
             </div>

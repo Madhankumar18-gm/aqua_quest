@@ -23,7 +23,7 @@ router.post(
   '/login',
   authLimiter,
   [
-    body('email').isEmail().withMessage('Please enter a valid email address'),
+    body('email').trim().notEmpty().withMessage('Email or username is required'),
     body('password').notEmpty().withMessage('Password is required'),
     validateRequest,
   ],
