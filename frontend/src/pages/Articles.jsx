@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axiosInstance from '../api/axiosInstance';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import { BookOpen, Search, Clock, ArrowRight, Tag } from 'lucide-react';
+import Card3D from '../components/common/Card3D';
+import { BookOpen, Search, Clock, ArrowRight } from 'lucide-react';
 
 const categories = [
   'All',
@@ -52,8 +53,8 @@ const Articles = () => {
         <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-teal-500/10 border border-teal-500/30 rounded-full text-teal-300 text-xs font-bold tracking-wide">
           <BookOpen className="w-4 h-4 text-teal-400" /> Groundwater Knowledge Hub
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-white">Groundwater & Hydrogeology Articles</h1>
-        <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+        <h1 className="text-3xl sm:text-4xl font-black text-white">Groundwater & Hydrogeology Articles</h1>
+        <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-medium">
           Learn about aquifer recharge mechanics, rainwater harvesting techniques, and practical water saving tips.
         </p>
       </div>
@@ -68,9 +69,9 @@ const Articles = () => {
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 ${
                   selectedCategory === cat
-                    ? 'bg-teal-600 text-white shadow-md shadow-teal-600/20'
+                    ? 'bg-gradient-to-r from-teal-500 to-sky-500 text-white shadow-lg shadow-teal-500/20'
                     : 'bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700/80 border border-slate-700/60'
                 }`}
               >
@@ -94,54 +95,55 @@ const Articles = () => {
         </div>
       </div>
 
-      {/* Article Grid */}
+      {/* Article Grid with 3D Cards */}
       {loading ? (
         <LoadingSpinner message="Fetching groundwater articles..." />
       ) : articles.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {articles.map((art) => (
-            <Link
-              key={art._id}
-              to={`/articles/${art._id}`}
-              className="card-panel-hover overflow-hidden flex flex-col p-0! group shadow-lg"
-            >
-              <div className="h-48 overflow-hidden relative">
-                <img
-                  src={art.imageUrl}
-                  alt={art.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <span className="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/90 backdrop-blur-md border border-slate-700 text-teal-300 text-[11px] font-extrabold rounded-lg shadow">
-                  {art.category}
-                </span>
-              </div>
+            <Card3D key={art._id} maxTilt={12} scale={1.02}>
+              <Link
+                to={`/articles/${art._id}`}
+                className="card-panel-3d overflow-hidden flex flex-col p-0! group shadow-xl h-full"
+              >
+                <div className="h-48 overflow-hidden relative">
+                  <img
+                    src={art.imageUrl}
+                    alt={art.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <span className="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/90 backdrop-blur-md border border-slate-700 text-teal-300 text-[11px] font-black rounded-lg shadow translate-z-20">
+                    {art.category}
+                  </span>
+                </div>
 
-              <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-4">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-[11px] font-semibold text-slate-400">
-                    <Clock className="w-3.5 h-3.5 text-slate-400" />
-                    <span>{art.readingTimeMinutes} min read</span>
-                    <span>•</span>
-                    <span>By {art.author}</span>
+                <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-[11px] font-bold text-slate-400">
+                      <Clock className="w-3.5 h-3.5 text-slate-400" />
+                      <span>{art.readingTimeMinutes} min read</span>
+                      <span>•</span>
+                      <span>By {art.author}</span>
+                    </div>
+                    <h3 className="text-base font-black text-white group-hover:text-teal-300 transition line-clamp-2 translate-z-20">
+                      {art.title}
+                    </h3>
+                    <p className="text-xs text-slate-400 line-clamp-3 leading-relaxed translate-z-10">
+                      {art.summary}
+                    </p>
                   </div>
-                  <h3 className="text-base font-bold text-white group-hover:text-teal-300 transition line-clamp-2">
-                    {art.title}
-                  </h3>
-                  <p className="text-xs text-slate-400 line-clamp-3 leading-relaxed">
-                    {art.summary}
-                  </p>
-                </div>
 
-                <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-extrabold text-teal-400">
-                  <span>Read Article</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-black text-teal-400 translate-z-20">
+                    <span>Read Article</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+            </Card3D>
           ))}
         </div>
       ) : (
-        <div className="card-panel p-12 text-center text-slate-400 text-xs sm:text-sm font-semibold">
+        <div className="card-panel-3d p-12 text-center text-slate-400 text-xs sm:text-sm font-semibold">
           No articles found matching your criteria. Try adjusting your search query or category filter.
         </div>
       )}
@@ -151,4 +153,3 @@ const Articles = () => {
 };
 
 export default Articles;
-

@@ -701,11 +701,12 @@ const seedDatabase = async () => {
       console.log(`[Seed] Created Default Admin User: ${adminEmail}`);
     } else {
       existingAdmin.role = 'admin';
+      existingAdmin.password = adminPassword;
       existingAdmin.totalPoints = Math.max(existingAdmin.totalPoints || 0, 1200);
       existingAdmin.level = 5;
       existingAdmin.levelTitle = 'Water Conservation Hero';
       await existingAdmin.save();
-      console.log(`[Seed] Updated Default Admin User stats: ${adminEmail}`);
+      console.log(`[Seed] Updated Default Admin User stats & password: ${adminEmail}`);
     }
 
     // 6. Seed Demo Users (idempotent check by email)

@@ -4,6 +4,8 @@ import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
 import ProtectedRoute from './components/common/ProtectedRoute';
+import Aqua3DBackground from './components/common/Aqua3DBackground';
+import AquaCursor from './components/common/AquaCursor';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -22,9 +24,13 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="flex flex-col min-h-screen bg-slate-950 text-slate-100 font-sans antialiased">
+        <div className="relative flex flex-col min-h-screen bg-slate-950 text-slate-100 font-sans antialiased overflow-x-hidden">
+          {/* Interactive 3D Canvas Hydro Background & Fluid Cursor */}
+          <Aqua3DBackground />
+          <AquaCursor />
+
           <Navbar />
-          <main className="flex-1">
+          <main className="relative z-10 flex-1">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />

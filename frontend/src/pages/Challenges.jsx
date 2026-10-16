@@ -2,15 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from '../api/axiosInstance';
 import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import Card3D from '../components/common/Card3D';
 import {
   Target,
-  Flame,
   Droplets,
   Waves,
   CheckCircle2,
-  Award,
-  Wrench,
-  Clock,
   Sparkles,
   AlertCircle,
   X
@@ -106,8 +103,8 @@ const Challenges = () => {
         <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-sky-500/10 border border-sky-500/30 rounded-full text-sky-300 text-xs font-bold tracking-wide">
           <Target className="w-4 h-4 text-sky-400" /> Conservation Missions
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-white">Water Conservation Challenges</h1>
-        <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+        <h1 className="text-3xl sm:text-4xl font-black text-white">Water Conservation Challenges</h1>
+        <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-medium">
           Take real-world action, reduce household waste, and earn server-verified conservation points.
         </p>
       </div>
@@ -120,9 +117,9 @@ const Challenges = () => {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 ${
                 selectedCategory === cat
-                  ? 'bg-sky-600 text-white shadow-md shadow-sky-600/20'
+                  ? 'bg-gradient-to-r from-sky-500 to-teal-500 text-white shadow-lg shadow-sky-500/20'
                   : 'bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700/80 border border-slate-700/60'
               }`}
             >
@@ -138,9 +135,9 @@ const Challenges = () => {
             <button
               key={diff}
               onClick={() => setSelectedDifficulty(diff)}
-              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all duration-200 ${
                 selectedDifficulty === diff
-                  ? 'bg-teal-500/20 text-teal-300 border border-teal-500/30'
+                  ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40 shadow-sm'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -150,86 +147,87 @@ const Challenges = () => {
         </div>
       </div>
 
-      {/* Challenges Grid */}
+      {/* Challenges Grid with 3D Cards */}
       {loading ? (
         <LoadingSpinner message="Fetching water conservation challenges..." />
       ) : challenges.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {challenges.map((item) => (
-            <div
-              key={item._id}
-              className={`card-panel flex flex-col justify-between space-y-6 transition ${
-                item.isCompletedToday
-                  ? 'border-emerald-500/40 bg-emerald-950/10'
-                  : 'hover:border-sky-500/40'
-              }`}
-            >
-              <div className="space-y-4">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="px-2.5 py-1 bg-slate-950 border border-slate-700 text-sky-400 text-[11px] font-extrabold rounded-lg">
-                    {item.category}
-                  </span>
-                  <span
-                    className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                      item.difficulty === 'Easy'
-                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
-                        : item.difficulty === 'Medium'
-                        ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
-                        : 'bg-red-500/10 text-red-400 border border-red-500/30'
-                    }`}
-                  >
-                    {item.difficulty}
-                  </span>
+            <Card3D key={item._id} maxTilt={12} scale={1.02}>
+              <div
+                className={`card-panel-3d flex flex-col justify-between space-y-6 h-full transition ${
+                  item.isCompletedToday
+                    ? 'border-emerald-500/50 bg-emerald-950/20'
+                    : 'hover:border-sky-500/50'
+                }`}
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="px-2.5 py-1 bg-slate-950 border border-slate-700 text-sky-400 text-[11px] font-black rounded-lg translate-z-20">
+                      {item.category}
+                    </span>
+                    <span
+                      className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider translate-z-20 ${
+                        item.difficulty === 'Easy'
+                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                          : item.difficulty === 'Medium'
+                          ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                          : 'bg-red-500/20 text-red-400 border border-red-500/30'
+                      }`}
+                    >
+                      {item.difficulty}
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-black text-white mb-1.5 translate-z-30">{item.title}</h3>
+                    <p className="text-xs text-slate-400 leading-relaxed translate-z-10">{item.description}</p>
+                  </div>
+
+                  {/* Rewards pill */}
+                  <div className="flex items-center gap-3 p-3 bg-slate-950/90 rounded-xl border border-slate-800/90 text-xs font-bold translate-z-20 shadow-inner">
+                    <div className="flex items-center gap-1 text-sky-400">
+                      <Droplets className="w-4 h-4" />
+                      <span>+{item.pointsReward} PTS</span>
+                    </div>
+                    <span className="text-slate-700">|</span>
+                    <div className="flex items-center gap-1 text-teal-400">
+                      <Waves className="w-4 h-4" />
+                      <span>+{item.waterSavedRewardLiters}L Saved</span>
+                    </div>
+                  </div>
                 </div>
 
-                <div>
-                  <h3 className="text-lg font-bold text-white mb-1.5">{item.title}</h3>
-                  <p className="text-xs text-slate-400 leading-relaxed">{item.description}</p>
-                </div>
-
-                {/* Rewards pill */}
-                <div className="flex items-center gap-3 p-3 bg-slate-950/80 rounded-xl border border-slate-800 text-xs font-bold">
-                  <div className="flex items-center gap-1 text-sky-400">
-                    <Droplets className="w-4 h-4" />
-                    <span>+{item.pointsReward} PTS</span>
-                  </div>
-                  <span className="text-slate-700">|</span>
-                  <div className="flex items-center gap-1 text-teal-400">
-                    <Waves className="w-4 h-4" />
-                    <span>+{item.waterSavedRewardLiters}L Saved</span>
-                  </div>
+                {/* Action Button */}
+                <div className="translate-z-30">
+                  {item.isCompletedToday ? (
+                    <div className="w-full py-2.5 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 font-extrabold text-xs rounded-xl flex items-center justify-center gap-2 shadow-md">
+                      <CheckCircle2 className="w-4 h-4" /> Completed Today
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => handleOpenModal(item)}
+                      disabled={!isAuthenticated}
+                      className="btn-primary-3d w-full py-2.5 text-xs font-black"
+                    >
+                      {isAuthenticated ? 'Complete Mission & Claim Rewards' : 'Log In to Complete'}
+                    </button>
+                  )}
                 </div>
               </div>
-
-              {/* Action Button */}
-              <div>
-                {item.isCompletedToday ? (
-                  <div className="w-full py-2.5 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold text-xs rounded-xl flex items-center justify-center gap-2">
-                    <CheckCircle2 className="w-4 h-4" /> Completed Today
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => handleOpenModal(item)}
-                    disabled={!isAuthenticated}
-                    className="btn-primary w-full py-2.5 text-xs font-extrabold"
-                  >
-                    {isAuthenticated ? 'Complete Mission & Claim Rewards' : 'Log In to Complete'}
-                  </button>
-                )}
-              </div>
-            </div>
+            </Card3D>
           ))}
         </div>
       ) : (
-        <div className="card-panel p-12 text-center text-slate-400 text-xs sm:text-sm font-semibold">
+        <div className="card-panel-3d p-12 text-center text-slate-400 text-xs sm:text-sm font-semibold">
           No challenges found matching your selected filters.
         </div>
       )}
 
       {/* Completion Modal */}
       {activeChallenge && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="card-panel bg-slate-900 border-slate-700 p-6 sm:p-8 max-w-lg w-full space-y-6 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="card-panel-3d bg-slate-900/95 border-slate-700 p-6 sm:p-8 max-w-lg w-full space-y-6 shadow-2xl relative animate-float-3d">
             <button
               onClick={handleCloseModal}
               className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-xl bg-slate-800 transition"
@@ -238,11 +236,11 @@ const Challenges = () => {
             </button>
 
             <div className="space-y-2">
-              <span className="px-2.5 py-0.5 bg-sky-500/20 text-sky-300 text-xs font-bold rounded-md">
+              <span className="px-2.5 py-0.5 bg-sky-500/20 text-sky-300 text-xs font-bold rounded-md border border-sky-500/30">
                 {activeChallenge.category}
               </span>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-white">{activeChallenge.title}</h2>
-              <p className="text-xs text-slate-400 leading-relaxed">{activeChallenge.instructions}</p>
+              <h2 className="text-xl sm:text-2xl font-black text-white">{activeChallenge.title}</h2>
+              <p className="text-xs text-slate-400 leading-relaxed font-medium">{activeChallenge.instructions}</p>
             </div>
 
             {modalFeedback ? (
@@ -271,7 +269,7 @@ const Challenges = () => {
 
                 <button
                   onClick={handleCloseModal}
-                  className="btn-secondary w-full py-2.5 text-xs font-bold"
+                  className="btn-secondary-3d w-full py-2.5 text-xs font-bold"
                 >
                   Close Window
                 </button>
@@ -294,7 +292,7 @@ const Challenges = () => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="btn-primary w-full py-3 text-xs font-extrabold"
+                  className="btn-primary-3d w-full py-3 text-xs font-black"
                 >
                   {submitting ? 'Submitting to Server...' : 'Confirm Action & Claim Rewards'}
                 </button>
@@ -309,4 +307,3 @@ const Challenges = () => {
 };
 
 export default Challenges;
-
