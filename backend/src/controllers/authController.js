@@ -74,36 +74,22 @@ const loginUser = async (req, res, next) => {
     console.log('[LOGIN ATTEMPT]', { identifier: loginIdentifier, passwordLength: cleanPassword.length });
 
     // Search by email OR username (case-insensitive)
-    let user = await User.findOne({
+    const user = await User.findOne({
       $or: [
         { email: loginIdentifier },
         { username: new RegExp(`^${loginIdentifier}$`, 'i') },
       ],
     }).select('+password');
 
-    // If identifier is admin keyword, match the admin user
-    if (!user && (loginIdentifier === 'admin' || loginIdentifier === 'adminaqua' || loginIdentifier.includes('admin') || loginIdentifier.includes('madhan'))) {
-      user = await User.findOne({ role: 'admin' }).select('+password');
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid email or password',
+      });
     }
 
-    let isMatch = user ? await user.matchPassword(cleanPassword) : false;
-
-    // Allow standard admin passwords or user credentials for admin
-    if (!isMatch && user && user.role === 'admin') {
-      const allowedAdminPasswords = [
-        'AdminPass123!',
-        'Admin@AquaQuest123',
-        'Madhan@18',
-        'admin123',
-        'admin',
-        'Admin123'
-      ];
-      if (allowedAdminPasswords.includes(cleanPassword)) {
-        isMatch = true;
-      }
-    }
-
-    if (!user || !isMatch) {
+    const isMatch = await user.matchPassword(cleanPassword);
+    if (!isMatch) {
       return res.status(401).json({
         success: false,
         message: 'Invalid email or password',

@@ -194,9 +194,10 @@ RATE_LIMIT_API_MAX=200
 RATE_LIMIT_AUTH_MAX=60
 RATE_LIMIT_SUBMISSION_MAX=60
 
-ADMIN_USERNAME=AdminAqua
-ADMIN_EMAIL=admin@aquaquest.org
-ADMIN_PASSWORD=AdminPass123!
+ADMIN_USERNAME=admin
+ADMIN_EMAIL=admin@aquaquest.com
+ADMIN_PASSWORD=AquaAdmin123!
+DEMO_USER_PASSWORD=AquaUser123!
 ```
 
 Create `frontend/.env`:
@@ -238,9 +239,9 @@ npm run frontend
 | `ALLOWED_ORIGINS` | Comma-separated CORS origins | `http://localhost:5173,http://localhost:3000` |
 | `RATE_LIMIT_API_MAX` | Max general API requests / 15m | `200` |
 | `RATE_LIMIT_AUTH_MAX` | Max auth requests / 15m | `60` |
-| `RATE_LIMIT_SUBMISSION_MAX` | Max quiz/challenge requests / 1m | `60` |
-| `ADMIN_EMAIL` | Default seeded admin email | `admin@aquaquest.org` |
-| `ADMIN_PASSWORD` | Default seeded admin password | `AdminPass123!` |
+| `ADMIN_USERNAME` | Default seeded admin username | `admin` |
+| `ADMIN_EMAIL` | Default seeded admin email | `admin@aquaquest.com` |
+| `ADMIN_PASSWORD` | Default seeded admin password | `AquaAdmin@2026!` |
 | `VITE_API_BASE_URL` | Frontend API client base URL | `http://localhost:5000/api` |
 
 ---
@@ -253,9 +254,16 @@ For evaluation and demonstration, the database includes pre-seeded demo accounts
 > **DEVELOPMENT & EVALUATION CREDENTIALS ONLY**
 
 - **Admin Account**:
-  - **Email**: `admin@aquaquest.org`
-  - **Password**: `AdminPass123!`
+  - **Username**: `admin`
+  - **Email**: `admin@aquaquest.com`
+  - **Password**: `AquaAdmin123!`
   - **Role**: `admin` (Access to `/admin` telemetry, user management, content creation)
+
+- **Standard User Account**:
+  - **Username**: `user`
+  - **Email**: `user@aquaquest.com`
+  - **Password**: `AquaUser123!`
+  - **Role**: `user` (Normal participant with points, challenges, and badges)
 
 - **Demo User Accounts**:
   - **Email**: `aarav@aquaquest.org` | **Password**: `DemoUser@123` (Level 4, 680 XP, 12-day streak)

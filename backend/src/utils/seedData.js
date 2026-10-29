@@ -1,4 +1,5 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', '..', '.env') });
 const mongoose = require('mongoose');
 const User = require('../models/User');
 const Article = require('../models/Article');
@@ -559,6 +560,19 @@ const initialQuizzes = [
 // High quality demo users to create realistic leaderboard and user profiles
 const demoUsersData = [
   {
+    username: 'user',
+    email: 'user@aquaquest.com',
+    role: 'user',
+    totalPoints: 250,
+    level: 2,
+    levelTitle: 'Water Shield',
+    currentStreak: 4,
+    maxStreak: 5,
+    waterSavedLiters: 150,
+    avatar: 'droplet-blue',
+    badgeCodes: ['FIRST_SPLASH', 'AQUIFER_DEFENDER', 'STREAK_3_DAYS'],
+  },
+  {
     username: 'aarav_hydro',
     email: 'aarav@aquaquest.org',
     role: 'user',
@@ -669,9 +683,17 @@ const seedDatabase = async () => {
     console.log(`[Seed] Quizzes check complete (${initialQuizzes.length} defined).`);
 
     // 5. Seed Default Admin User safely using process.env
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@aquaquest.org';
-    const adminPassword = process.env.ADMIN_PASSWORD || 'AdminPass123!';
-    const adminUsername = process.env.ADMIN_USERNAME || 'AdminAqua';
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@aquaquest.com';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'AquaAdmin123!';
+    const adminUsername = process.env.ADMIN_USERNAME || 'admin';
+
+    // Remove legacy admin credentials details if present
+    await User.deleteMany({
+      $or: [
+        { email: 'admin@aquaquest.org' },
+        { username: 'AdminAqua' },
+      ],
+    });
 
     const existingAdmin = await User.findOne({ email: adminEmail.toLowerCase() });
     if (!existingAdmin) {
@@ -701,6 +723,7 @@ const seedDatabase = async () => {
       console.log(`[Seed] Created Default Admin User: ${adminEmail}`);
     } else {
       existingAdmin.role = 'admin';
+      existingAdmin.username = adminUsername;
       existingAdmin.password = adminPassword;
       existingAdmin.totalPoints = Math.max(existingAdmin.totalPoints || 0, 1200);
       existingAdmin.level = 5;
@@ -733,6 +756,7 @@ const seedDatabase = async () => {
         await newUser.save();
         console.log(`[Seed] Created Demo User: ${uData.username}`);
       } else {
+        existingUser.password = demoPassword;
         existingUser.totalPoints = uData.totalPoints;
         existingUser.level = uData.level;
         existingUser.levelTitle = uData.levelTitle;

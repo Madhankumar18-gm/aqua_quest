@@ -11,21 +11,38 @@ const resetAdmin = async () => {
     await mongoose.connect(uri);
     console.log('Connected to DB');
 
-    const adminEmail = (process.env.ADMIN_EMAIL || 'admin@aquaquest.org').toLowerCase();
-    const adminPassword = process.env.ADMIN_PASSWORD || 'AdminPass123!';
+    const adminEmail = (process.env.ADMIN_EMAIL || 'admin@aquaquest.com').toLowerCase();
+    const adminPassword = process.env.ADMIN_PASSWORD || 'AquaAdmin123!';
+    const adminUsername = process.env.ADMIN_USERNAME || 'admin';
+
+    // Delete legacy admin user if present
+    await User.deleteMany({
+      $or: [
+        { email: 'admin@aquaquest.org' },
+        { username: 'AdminAqua' },
+      ],
+    });
 
     let admin = await User.findOne({ email: adminEmail });
     if (!admin) {
       console.log('Admin user not found. Creating new admin...');
       admin = new User({
-        username: process.env.ADMIN_USERNAME || 'AdminAqua',
+        username: adminUsername,
         email: adminEmail,
         password: adminPassword,
         role: 'admin',
+        totalPoints: 1200,
+        level: 5,
+        levelTitle: 'Water Conservation Hero',
+        currentStreak: 7,
+        maxStreak: 15,
+        waterSavedLiters: 550,
       });
     } else {
-      console.log('Updating password for existing admin user:', adminEmail);
+      console.log('Updating password and username for existing admin user:', adminEmail);
+      admin.username = adminUsername;
       admin.password = adminPassword;
+      admin.role = 'admin';
     }
 
     await admin.save();
